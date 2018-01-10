@@ -1,7 +1,9 @@
 import random
 
+hours = 16
+
 class User(object):
-    def __init__(self, job, job_loc, salary, food, money_pocket, money_bank, education):
+    def __init__(self, job, job_loc, salary, food, money_pocket, money_bank, education, current_loc):
         self.job = job
         self.job_loc = job_loc
         self.salary = salary
@@ -9,14 +11,59 @@ class User(object):
         self.money_pocket = money_pocket
         self.money_bank = money_bank
         self.education = education
+        self.current_loc = current_loc
 
-player = User('none', 'nowhere', 0, 0, 0, 0, 'none')
-hours = 16
+    def travel(self, destination):
+        self.destination = destination
+        if self.current_loc == 'the Diner':
+            if self.destination == 'b':
+                hours -= 1
+                self.current_loc = 'the Bank'
+            elif self.destination == 'c':
+                hours -= 1
+                self.current_loc = 'Career Services'
+            elif self.destination == 'e':
+                hours -= 2
+                self.current_loc = 'the Education Center'
+        if self.current_loc == 'the Bank':
+            if self.destination == 'd':
+                hours -= 1
+            elif self.destination == 'c':
+                hours -= 2
+                self.current_loc = 'Career Services'
+            elif self.destination == 'e':
+                hours -= 1
+                self.current_loc = 'Education Center'
+        if self.current_loc == 'Career Services':
+            if self.destination == 'd':
+                hours -= 1
+                self.current_loc = 'the Diner'
+            elif self.destination == 'b':
+                hours -= 2
+                self.current_loc = 'the Bank'
+            elif self.destination == 'e':
+                hours -= 1
+                self.current_loc = 'the Education Center'
+        if self.current_loc == 'the Education Center':
+            if self.destination == 'd':
+                hours -= 2
+                self.current_loc = 'the Diner'
+            elif self.destination == 'b':
+                hours -= 1
+                self.current_loc = 'the Bank'
+            elif self.destination == 'c':
+                hours -= 1
+                self.current_loc = 'Career Services'
+
+
+    def work(self):
+        pass
+
+player = User('none', 'nowhere', 0, 0, 50, 0, 'none', 'the Diner')
 day_number = 1
 hours_to_graduate = 50
 
-l = 'the Diner'
-x = input(f"""You are on Day {day_number}. You have {hours} hours left. You are at {l}. Where would you like to go?
+x = input(f"""You are on Day {day_number}. You have {hours} hours left. You are at {player.current_loc}. Where would you like to go?
     Diner (d)
     Bank (b)
     Career Services (c)
@@ -24,6 +71,7 @@ x = input(f"""You are on Day {day_number}. You have {hours} hours left. You are 
 """)
 
 player.travel(x)
+
 # DINER
 while x == 'd':
     if l == 'the Bank':
@@ -60,7 +108,7 @@ while x == 'd':
         if z == 'b':
             if player.money_pockets >= price:
                 player.money_pockets -= price
-                player.food = 'food'
+                player.food += 1
             else:
                 print('Sorry, you do not have enough money.')
         if z == 'e':
