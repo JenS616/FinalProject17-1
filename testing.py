@@ -56,8 +56,9 @@ class User(object):
                 self.current_loc = 'Career Services'
 
 
-    def work(self):
-        pass
+    def work(self, work_hours):
+        if self.current_loc == self.job_loc:
+            self.work_hours = input('How many hours would you like to work? ')
 
 player = User('none', 'nowhere', 0, 0, 50, 0, 'none', 'the Diner')
 day_number = 1
