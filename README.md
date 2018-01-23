@@ -17,3 +17,6 @@ certain amount of hours to travel between the places. It is possible for players
 to be robbed of the money in their pocket, but the money they put into the bank
 is safe. It is also possible to lose your job. The more lottery tickets that are
 bought, the better chance of winning there is.
+
+Presentation: https://docs.google.com/presentation/d/1fGIPnCkAA5c1CLN4tAbFYjT_ac8B2NzPsqM-HWIumD8/edit?usp=sharing
+Flowchart:https://drive.google.com/file/d/1i9nGF6uPKeRn0ea4GEe3EdGMSy_dPimw/view?usp=sharing
