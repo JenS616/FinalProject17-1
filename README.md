@@ -1,4 +1,4 @@
-The objective of the game is to have $4,000 in your bank account by the end of
+The objective of the game is to have $1,000 in your bank account by the end of
 21 days. There are 16 hours per day (8 hours of sleep deducted). The locations
 include:
 - the Diner (a possible place of work and a place to buy food, which will

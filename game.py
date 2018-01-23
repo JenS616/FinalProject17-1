@@ -1,6 +1,9 @@
 # Importing random
 import random
 
+# Importing sys
+import sys
+
 class User(object):
     """Establishes player and functions"""
     def __init__(self, job, job_loc, salary, money_pocket, money_bank, money_earned, education, current_loc, hours, day_number, rent, hours_graduate, happiness, health, lottery_ticket):
@@ -101,13 +104,20 @@ class User(object):
     How many hours would you like to work?
 --------------------------------------------------------------------------------------------------
         """))
-            if self.hours >= self.hours_work:
+            if self.hours > self.hours_work:
                 self.hours -= self.hours_work
                 self.money_earned = self.hours_work * self.salary
                 self.money_pocket += self.money_earned
                 print(f"""You have earned {self.money_earned} dollars. You have {self.money_pocket} dollars.
 --------------------------------------------------------------------------------------------------
         """)
+            elif self.hours == self.hours_work:
+                self.money_earned = self.hours * self.salary
+                self.money_pocket += self.money_earned
+                print(f"""You have earned {self.money_earned} dollars. You have {self.money_pocket} dollars.
+--------------------------------------------------------------------------------------------------
+        """)
+                reset_day()
             elif self.hours < self.hours_work:
                 print("""Sorry, you do not have enough hours in the day.
 --------------------------------------------------------------------------------------------------
@@ -134,8 +144,9 @@ class User(object):
     def learn(self, hours_learn):
         """Subtracts hours from player's hours to graduate"""
         self.hours_learn = hours_learn
-        self.hours -= hours_learn
-        self.hours_graduate -= hours_learn
+        self.hours -= self.hours_learn
+        self.hours_graduate -= self.hours_learn
+
 
     def see_stats(self):
         """Displays player's stats"""
@@ -153,6 +164,7 @@ class User(object):
     Money in Bank = {self.money_bank}
     Education = {self.education}
     Lottery Tickets = {self.lottery_ticket}
+    Rent = {self.rent}
 --------------------------------------------------------------------------------------------------
         """)
 
@@ -211,7 +223,7 @@ You LOSE 2 HAPPINESS and 1 hour because you're sad.
         player.lottery_ticket = 0
         # Rent day 7
         if player.day_number == 7:
-            player.rent -= 1
+            player.rent = 0
             day_beginning = input(f"""##################################################################################################
 You are on Day {player.day_number}. Today is the day that your rent is due ($500). You should go
 to the bank to pay it off or you will be evicted. You have {player.hours} hours left. You are at
@@ -227,7 +239,7 @@ Where would you like to go?
             player.travel(day_beginning)
         # Rent day 14
         elif player.day_number == 14:
-            player.rent -= 1
+            player.rent = 0
             day_beginning = input(f"""##################################################################################################
 You are on Day {player.day_number}. Today is the day that your rent is due ($1,000). You should go
 to the bank to pay it off or you will be evicted. You have {player.hours} hours left. You are at
@@ -243,7 +255,7 @@ Where would you like to go?
             player.travel(day_beginning)
         # Rent day 21
         elif player.day_number == 21:
-            player.rent -= 1
+            player.rent = 0
             day_beginning = input(f"""##################################################################################################
 You are on Day {player.day_number}. Today is the day that your rent is due ($1,500). You should go
 to the bank to pay it off or you will be evicted. You have {player.hours} hours left. You are at
@@ -257,6 +269,62 @@ Where would you like to go?
 --------------------------------------------------------------------------------------------------
         """)
             player.travel(day_beginning)
+        # Subtracting rent
+        elif player.day_number == 8:
+            player.rent -= 1
+            if player.rent == -1:
+                print("""YOU DID NOT PAY RENT AND YOU WERE EVICTED.
+GAME OVER.
+--------------------------------------------------------------------------------------------------
+        """)
+                sys.exit()
+        elif player.day_number == 15:
+            player.rent -= 1
+            if player.rent == -1:
+                print("""YOU DID NOT PAY RENT AND YOU WERE EVICTED.
+GAME OVER.
+--------------------------------------------------------------------------------------------------
+        """)
+                sys.exit()
+        elif player.day_number == 22:
+            player.rent -= 1
+            if player.rent == -1:
+                print("""YOU DID NOT PAY RENT AND YOU WERE EVICTED.
+GAME OVER.
+--------------------------------------------------------------------------------------------------
+        """)
+                sys.exit()
+            else:
+                # WIN
+                if player.money_bank >= 1000:
+                    money_points = (player.money_pocket + player.money_bank) / 1000
+                    final_score = player.happiness + player.health + money_points
+                    if player.education == 'none':
+                        final_score += 10
+                    elif player.education == 'high school':
+                        final_score += 20
+                    elif player.education == 'college':
+                        final_score += 100
+                    print(f"""Congratulations, you have won the game! Here are your
+ending stats.
+    Happiness = {player.happiness}
+    Health = {player.health}
+    Money in Pocket = {player.money_pocket}
+    Money in Bank = {player.money_bank}
+    Education = {player.education}
+YOUR FINAL SCORE IS...
+    {final_score} points!
+Thanks for playing!
+--------------------------------------------------------------------------------------------------
+            """)
+                    sys.exit()
+                # LOSE
+                else:
+                    print(f"""GAME OVER. You did not have $1,000 in your bank account.
+Thanks for playing!
+--------------------------------------------------------------------------------------------------
+            """)
+                    sys.exit()
         # Normal day beginning
         else:
             day_beginning = input(f"""##################################################################################################
@@ -270,58 +338,17 @@ Where would you like to go?
 --------------------------------------------------------------------------------------------------
         """)
             player.travel(day_beginning)
-        # ENDS GAME BECAUSE EVICTION
-        while player.rent == -1:
-            print("""YOU DID NOT PAY RENT AND YOU WERE EVICTED.
-GAME OVER.
---------------------------------------------------------------------------------------------------
-        """)
-            break
-
-def game_over():
-    """Ends the game"""
-    # END GAME
-    while player.day_number == 22:
-        # WIN
-        if player.money_bank >= 2000:
-            money_points = (player.money_pocket + player.money_bank) / 1000
-            final_score = player.happiness + player.health + money_points
-            if player.education == 'none':
-                final_score += 10
-            elif player.education == 'high school':
-                final_score += 20
-            elif player.education == 'college':
-                final_score += 100
-            print(f"""Congratulations, you have won the game! Here are your
-ending stats.
-    Happiness = {self.happiness}
-    Health = {self.health}
-    Money in Pocket = {self.money_pocket}
-    Money in Bank = {self.money_bank}
-    Education = {self.education}
-YOUR FINAL SCORE IS...
-    {final_score} points!
-Thanks for playing!
---------------------------------------------------------------------------------------------------
-            """)
-            break
-        # LOSE
-        else:
-            print(f"""GAME OVER. You did not have $4,000 in your bank account.
-Thanks for playing!
---------------------------------------------------------------------------------------------------
-            """)
-            break
 
 # CREATE PLAYER
-player = User('none', 'nowhere', 0, 0, 0, 0, 'none', 'the Diner', 16, 1, 1, 50, 10, 10, 0)
+player = User('none', 'nowhere', 0, 0, 0, 0, 'none', 'Career Services', 16, 1, 1, 50, 10, 10, 0)
 
 # BEGINNING OF GAME
-print("""Rent is due every 7 days (Day 7: $500; Day 14: $1,000; Day 21: $1,500. If you fail to pay rent,
-you will lose the game automatically. You can apply forjobs at Career Services and gain a better
+print("""Rent is due every 7 days (Day 7: $500; Day 14: $1,000; Day 21: $1,500). If you fail to pay rent,
+you will lose the game automatically. You can apply for jobs at Career Services and gain a better
 education at the Education Center (a better education can give you a higher paying job). At the
 Diner and Shopping Mall, you can buy items to boost your happiness and health. At the Bank, you
-can access your bank account. YOU HAVE 21 DAYS TO EARN $2,000!
+can access your bank account, where your money will be kept safe from robbers. YOU HAVE 21 DAYS TO
+HAVE $1,000 IN YOUR BANK ACCOUNT!
 --------------------------------------------------------------------------------------------------
         """)
 day_beginning = input(f"""You are on Day {player.day_number}. You have {player.hours} hours left. You are at {player.current_loc}.
@@ -341,8 +368,7 @@ while player.day_number <= 21:
     while player.current_loc == 'the Diner':
         if player.hours <= 0:
             reset_day()
-            game_over()
-        if player.current_loc == 'the Diner':
+        elif day_beginning == 'd' or player.current_loc == 'the Diner':
             a = input(f"""You have {player.hours} hours left. You are at {player.current_loc}.
 What would you like to do?
     Travel (t)
@@ -392,8 +418,7 @@ What would you like to do?
     while player.current_loc == 'the Bank':
         if player.hours <= 0:
             reset_day()
-            game_over()
-        if player.current_loc == 'the Bank':
+        elif day_beginning == 'b' or player.current_loc == 'the Bank':
             a = input(f"""You have {player.hours} hours left. You are at {player.current_loc}. What would you like to do?
     Travel (t)
     Deposit (d)
@@ -454,7 +479,7 @@ What would you like to do?
             player.work()
     # BANK PAY RENT
         if a == 'p':
-            if player.day_number == 7 or 14 or 21:
+            if player.day_number == 7:
                 rent = 500
                 if player.money_pocket >= rent:
                     player.rent = 1
@@ -466,20 +491,44 @@ What would you like to do?
                     print("""Sorry, you do not have enough money on you. Please withdraw from your bank account or earn more money.
 --------------------------------------------------------------------------------------------------
         """)
+            elif player.day_number == 14:
+                rent = 1000
+                if player.money_pocket >= rent:
+                    player.rent = 1
+                    player.money_pocket -= 1000
+                    print("""Congratulations, you have paid off your rent.
+--------------------------------------------------------------------------------------------------
+        """)
+                else:
+                    print("""Sorry, you do not have enough money on you. Please withdraw from your bank account or earn more money.
+--------------------------------------------------------------------------------------------------
+        """)
+            elif player.day_number == 21:
+                rent = 1500
+                if player.money_pocket >= rent:
+                    player.rent = 1
+                    player.money_pocket -= 1500
+                    print("""Congratulations, you have paid off your rent.
+--------------------------------------------------------------------------------------------------
+        """)
+                else:
+                    print("""Sorry, you do not have enough money on you. Please withdraw from your bank account or earn more money.
+--------------------------------------------------------------------------------------------------
+        """)
             else:
                 if player.day_number < 7:
-                    days = 7 - player.day_number
-                    print("""Your rent is due in {days} days. Come back then.
+                    days = 7 - int(player.day_number)
+                    print(f"""Your rent is due in {days} days. Come back then.
 --------------------------------------------------------------------------------------------------
         """)
                 elif player.day_number < 14:
-                    days = 14 - player.day_number
-                    print("""Your rent is due in {days} days. Come back then.
+                    days = 14 - int(player.day_number)
+                    print(f"""Your rent is due in {days} days. Come back then.
 --------------------------------------------------------------------------------------------------
         """)
                 elif player.day_number < 21:
-                    days = 21 - player.day_number
-                    print("""Your rent is due in {days} days. Come back then.
+                    days = 21 - int(player.day_number)
+                    print(f"""Your rent is due in {days} days. Come back then.
 --------------------------------------------------------------------------------------------------
         """)
     # BANK SEE STATS
@@ -491,8 +540,7 @@ What would you like to do?
     while player.current_loc == 'Career Services':
         if player.hours <= 0:
             reset_day()
-            game_over()
-        if player.current_loc == 'Career Services':
+        elif day_beginning == 'c' or player.current_loc == 'Career Services':
             a = input(f"""You have {player.hours} hours left. You are at {player.current_loc}. What would you like to do?
     Travel (t)
     View Jobs (v)
@@ -518,6 +566,7 @@ What would you like to do?
     Shopping Mall (s)
 --------------------------------------------------------------------------------------------------
         """)
+            # DINER JOBS
             if b == 'd':
                 odds1 = random.randint(0, 4)
                 odds2 = random.randint(0, 4)
@@ -531,6 +580,7 @@ What would you like to do?
     Manager (m): ${salary_manager} - must have college education
 --------------------------------------------------------------------------------------------------
         """)
+                # If cashier is selected
                 if e == 'ca':
                     if odds1 != 0:
                         player.job = 'Cashier'
@@ -543,6 +593,7 @@ What would you like to do?
                         print("""Sorry, this job is not available right now.
 --------------------------------------------------------------------------------------------------
         """)
+                # If cook is selected
                 if e == 'co':
                     if player.education != 'none':
                         if odds2 != 0:
@@ -560,6 +611,7 @@ What would you like to do?
                         print("""Sorry, you are not qualified for this job.
 --------------------------------------------------------------------------------------------------
         """)
+                # If manager is selected
                 if e == 'm':
                     if player.education == 'college':
                         if odds3 != 0:
@@ -577,6 +629,7 @@ What would you like to do?
                         print("""Sorry, you are not qualified for this job.
 --------------------------------------------------------------------------------------------------
         """)
+            # BANK JOBS
             if b == 'b':
                 odds1 = random.randint(0, 4)
                 odds2 = random.randint(0, 4)
@@ -590,6 +643,7 @@ What would you like to do?
     Manager (m): ${salary_manager} - must have college education
 --------------------------------------------------------------------------------------------------
         """)
+                # If security guard is selected
                 if e == 's':
                     if odds1 != 0:
                         player.job = 'Security Guard'
@@ -602,6 +656,7 @@ What would you like to do?
                         print("""Sorry, this job is not available right now.
 --------------------------------------------------------------------------------------------------
         """)
+                # If teller is selected
                 if e == 't':
                     if player.education != 'none':
                         if odds2 != 0:
@@ -619,6 +674,7 @@ What would you like to do?
                         print("""Sorry, you are not qualified for this job.
 --------------------------------------------------------------------------------------------------
         """)
+                # If manager is selected
                 if e == 'm':
                     if player.education == 'college':
                         if odds3 != 0:
@@ -636,6 +692,7 @@ What would you like to do?
                         print("""Sorry, you are not qualified for this job.
 --------------------------------------------------------------------------------------------------
         """)
+            # EDUCATION CENTER JOBS
             if b == 'e':
                 odds1 = random.randint(0, 4)
                 odds2 = random.randint(0, 4)
@@ -649,6 +706,7 @@ What would you like to do?
     Teacher (t): ${salary_teacher} - must have college education
 --------------------------------------------------------------------------------------------------
         """)
+                # If janitor selected
                 if e == 'j':
                     if odds1 != 0:
                         player.job = 'Janitor'
@@ -661,6 +719,7 @@ What would you like to do?
                         print("""Sorry, this job is not available right now.
 --------------------------------------------------------------------------------------------------
         """)
+                # If secretary selected
                 if e == 's':
                     if player.education != 'none':
                         if odds2 != 0:
@@ -678,6 +737,7 @@ What would you like to do?
                         print("""Sorry, you are not qualified for this job.
 --------------------------------------------------------------------------------------------------
         """)
+                # If teacher selected
                 if e == 't':
                     if player.education == 'college':
                         if odds3 != 0:
@@ -695,6 +755,7 @@ What would you like to do?
                         print("""Sorry, you are not qualified for this job.
 --------------------------------------------------------------------------------------------------
         """)
+            # SHOPPING MALL JOBS
             if b == 's':
                 odds1 = random.randint(0, 4)
                 odds2 = random.randint(0, 4)
@@ -708,6 +769,7 @@ What would you like to do?
     Manager (m): ${salary_manager} - must have college education
 --------------------------------------------------------------------------------------------------
         """)
+                # If security guard selected
                 if e == 's':
                     if odds1 != 0:
                         player.job = 'Security Guard'
@@ -720,6 +782,7 @@ What would you like to do?
                         print("""Sorry, this job is not available right now.
 --------------------------------------------------------------------------------------------------
         """)
+                # If retail worker selected
                 if e == 'r':
                     if player.education != 'none':
                         if odds2 != 0:
@@ -737,6 +800,7 @@ What would you like to do?
                         print("""Sorry, you are not qualified for this job.
 --------------------------------------------------------------------------------------------------
         """)
+                # If manager selected
                 if e == 'm':
                     if player.education == 'college':
                         if odds3 != 0:
@@ -762,8 +826,7 @@ What would you like to do?
     while player.current_loc == 'the Education Center':
         if player.hours <= 0:
             reset_day()
-            game_over()
-        if player.current_loc == 'the Education Center':
+        elif day_beginning == 'e' or player.current_loc == 'the Education Center':
             a = input(f"""You have {player.hours} hours left. You are at {player.current_loc}. What would you like to do?
     Travel (t)
     Learn (l)
@@ -797,31 +860,59 @@ What would you like to do?
 --------------------------------------------------------------------------------------------------
         """)
                 else:
+                    # Getting high school education
                     if player.education == 'none' and player.hours_graduate > 0:
-                        player.learn(hours_learn)
-                        if player.hours_graduate > 0:
-                            print(f"""You spent {hours_learn} hours learning. You have {player.hours_graduate} left to graduate. Your education level: {player.education}.
+                        if hours_learn == player.hours:
+                            player.learn(hours_learn)
+                            if player.hours_graduate > 0:
+                                print(f"""You spent {hours_learn} hours learning. You have {player.hours_graduate} left to graduate. Your education level: {player.education}.
 --------------------------------------------------------------------------------------------------
         """)
-                        elif player.hours_graduate <= 0:
-                            print("""Congratulations, you have graduated high school! You gain 5 Happiness.
+                                reset_day()
+                            elif player.hours_graduate <= 0:
+                                print("""Congratulations, you have graduated high school! You gain 5 Happiness.
 --------------------------------------------------------------------------------------------------
         """)
-                            player.education = 'high school'
-                            player.happiness += 5
-                            player.hours_graduate = 50
-                    elif player.education == 'high school' and player.hours_graduate > 0:
-                        player.learn(hours_learn)
-                        if player.hours_graduate > 0:
-                            print(f"""You spent {hours_learn} hours learning. You have {player.hours_graduate} left to graduate. Your education level: {player.education}.
+                                reset_day()
+                        else:
+                            player.learn(hours_learn)
+                            if player.hours_graduate > 0:
+                                print(f"""You spent {hours_learn} hours learning. You have {player.hours_graduate} left to graduate. Your education level: {player.education}.
 --------------------------------------------------------------------------------------------------
         """)
-                        elif player.hours_graduate <= 0:
-                            print("""Congratulations, you have graduated college! You gain 5 Happiness.
+                            elif player.hours_graduate <= 0:
+                                print("""Congratulations, you have graduated high school! You gain 5 Happiness.
 --------------------------------------------------------------------------------------------------
         """)
-                            player.education = 'college'
-                            player.happiness += 5
+                                player.education = 'high school'
+                                player.happiness += 5
+                                player.hours_graduate = 50
+                    # Getting college education
+                    if player.education == 'high school' and player.hours_graduate > 0:
+                        if hours_learn == player.hours:
+                            player.learn(hours_learn)
+                            if player.hours_graduate > 0:
+                                print(f"""You spent {hours_learn} hours learning. You have {player.hours_graduate} left to graduate. Your education level: {player.education}.
+--------------------------------------------------------------------------------------------------
+        """)
+                                reset_day()
+                            elif player.hours_graduate <= 0:
+                                print("""Congratulations, you have graduated college! You gain 5 Happiness.
+--------------------------------------------------------------------------------------------------
+        """)
+                                reset_day()
+                        else:
+                            player.learn(hours_learn)
+                            if player.hours_graduate > 0:
+                                print(f"""You spent {hours_learn} hours learning. You have {player.hours_graduate} left to graduate. Your education level: {player.education}.
+--------------------------------------------------------------------------------------------------
+        """)
+                            elif player.hours_graduate <= 0:
+                                print("""Congratulations, you have graduated college! You gain 5 Happiness.
+--------------------------------------------------------------------------------------------------
+        """)
+                                player.education = 'college'
+                                player.happiness += 5
 
     # EDUCATION CENTER WORK
         if a == 'wo':
@@ -834,8 +925,7 @@ What would you like to do?
     while player.current_loc == 'the Shopping Mall':
         if player.hours <= 0:
             reset_day()
-            game_over()
-        if player.current_loc == 'the Shopping Mall':
+        elif day_beginning == 's' or player.current_loc == 'the Shopping Mall':
             a = input(f"""You have {player.hours} hours left. You are at {player.current_loc}. What would you like to do?
     Travel (t)
     Go Shopping (g)
@@ -844,7 +934,6 @@ What would you like to do?
     See Stats (s)
 --------------------------------------------------------------------------------------------------
         """)
-
     # SHOPPING MALL TRAVEL
         if a == 't':
             new_loc = input("""Where would you like to go?
